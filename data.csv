@@ -1,0 +1,20 @@
+Name,Latitude,Longitude,State,Country,Continent,Visited
+Kota,25.1800,75.8300,Rajasthan,India,Asia,TRUE
+Hajipur,25.6800,85.2200,Bihar,India,Asia,TRUE
+Bangalore,12.9791,77.5913,Karnatna,India,Asia,TRUE
+Vaishno Devi,33.0299,74.9482,Jammu & Kashmir,India,Asia,TRUE
+Patna,25.6100,85.1414,Bihar,India,Asia,TRUE
+Chapra,25.7808,84.7308,Bihar,India,Asia,TRUE
+Gaya,24.7914,85.0002,Bihar,India,Asia,TRUE
+Eibsee Lake,47.4562,10.9729,Bavaria,Germany,Europe,TRUE
+Frankfurt,50.1106,8.6822,Hesse,Germany,Europe,TRUE
+Marburg,50.8167,8.7667,Hesse,Germany,Europe,TRUE
+Munich,48.1375,11.5750,Bavaria,Germany,Europe,TRUE
+Chennai,13.0825,80.2750,Tamil Nadu,India,Asia,TRUE
+Salzburg,47.8000,13.0450,Austria,Austria,Europe,TRUE
+Garmisch-Partenkirchen,47.4919,11.0948,Bavaria,Germany,Europe,TRUE
+New Delhi,28.6139,77.2090,New Delhi,India,Asia,TRUE
+Kolkata,22.5727,88.3639,West Bengal,India,Asia,TRUE
+Bhagalpur,25.2372,86.9746,Bihar,India,Asia,TRUE
+Sonepur,25.7000,85.1800,Bihar,India,Asia,TRUE
+Danapur,25.6333,85.0500,Bihar,India,Asia,TRUE

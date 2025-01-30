@@ -3,17 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wander Lust - Travel Tracker</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Wander Lust</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #1e1e1e;
+            color: white;
+        }
+        #map {
+            height: 500px;
+            width: 80%;
+            margin: auto;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            color: #ffffff;
+        }
+        .stats-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 15px;
+        }
+        .stat-box {
+            background-color: #292929;
+            padding: 15px 20px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 200px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        .stat-box p {
+            margin: 5px 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .stat-value {
+            font-size: 24px;
+            color: #4CAF50;
+        }
+        .tooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            width: 200px;
+            text-align: center;
+            font-size: 14px;
+            white-space: normal;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Wander Lust - Travel Tracker</h1>
-        <button id="theme-toggle">Toggle Dark Mode</button>
-    </header>
+    <h1>Wander Lust</h1>
     <div id="map"></div>
+
+    <div class="stats-container">
+        <div class="stat-box">
+            <p>Total Countries Visited</p>
+            <span class="stat-value" id="total-countries">0</span>
+        </div>
+        <div class="stat-box">
+            <p>Total Places Visited</p>
+            <span class="stat-value" id="total-places">0</span>
+        </div>
+        <div class="stat-box">
+            <p>Total Continents Visited</p>
+            <span class="stat-value" id="total-continents">0</span>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="{{ url_for('static', filename='homepage.js') }}"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.geojson-vt/leaflet.geojson-vt.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let map = L.map('map').setView([20, 0], 2);  // Default view
+
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '© OpenStreetMap contributors & CARTO',
+                subdomains: 'abcd',
+                maxZoom: 20
+            }).addTo(map);
+
+            // Fetch location data from Flask API
+            fetch("/get_locations")
+                .then(response => response.json())
+                .then(locations => {
+                    if (!Array.isArray(locations)) {
+                        console.error("Invalid data format received:", locations);
+                        return;
+                    }
+
+                    // Track visited countries
+                    let visitedCountries = new Set();
+                    let visitedPlaces = 0;
+                    let visitedContinents = new Set();
+                    locations.forEach(location => {
+                        if (location.Visited) {
+                            visitedCountries.add(location.Country);
+                            visitedPlaces++;
+                            visitedContinents.add(location.Continent);
+                        }
+                    });
+
+                    document.getElementById("total-countries").textContent = visitedCountries.size;
+                    document.getElementById("total-places").textContent = visitedPlaces;
+                    document.getElementById("total-continents").textContent = visitedContinents.size;
+                    
+                    // Shade visited countries in green
+                    fetch("https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json")
+                        .then(response => response.json())
+                        .then(geojson => {
+                            L.geoJSON(geojson, {
+                                style: function(feature) {
+                                    return {
+                                        fillColor: visitedCountries.has(feature.properties.name) ? "green" : "transparent",
+                                        weight: 0.1,
+                                        opacity: 1,
+                                        color: "white",
+                                        fillOpacity: 0.5
+                                    };
+                                }
+                            }).addTo(map);
+                        });
+                    
+                    // Add markers to the map
+                    locations.forEach(location => {
+                        let iconUrl = location.Visited ? '/static/resources/visited.png' : '/static/resources/watchlist.png';
+                        let customIcon = L.icon({
+                            iconUrl: iconUrl,
+                            iconSize: [32, 32],
+                            iconAnchor: [16, 32],
+                            popupAnchor: [0, -32]
+                        });
+                        
+                        let marker = L.marker([location.Latitude, location.Longitude], { icon: customIcon })
+                            .addTo(map)
+                            .bindPopup(`<b>${location.Name}</b><br>State: ${location.State}<br>Country: ${location.Country}`);
+                        marker.on('click', function() {
+                            this.openPopup();
+                        });
+                    });
+                })
+                .catch(error => console.error("Error loading locations:", error));
+
+        
+        });
+        
+    </script>
+
 </body>
 </html>
