@@ -1,6 +1,9 @@
 from flask import Flask, render_template, jsonify
 import pandas as pd
 
+import os
+os.system("pip install setuptools wheel")
+
 app = Flask(__name__)
 
 # Load location data from Excel
