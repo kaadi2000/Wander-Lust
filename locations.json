@@ -1,0 +1,16 @@
+[
+    {
+        "name": "Berlin",
+        "lat": "52.5187416",
+        "lng": "13.4080224",
+        "notes": "",
+        "visited": false
+    },
+    {
+        "name": "Berlin Brandenburg Airport \"Willy Brandt\", Willy-Brandt-Platz, Sch\u00f6nefeld, Dahme-Spreewald, Brandenburg, 12529, Germany",
+        "lat": 52.366493500000004,
+        "lng": 13.488038876885103,
+        "notes": "",
+        "visited": true
+    }
+]
